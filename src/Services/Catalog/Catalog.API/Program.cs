@@ -1,6 +1,7 @@
 using Carter;
 using Catalog.API;
 using Catalog.API.Product.CreateProduct;
+using Marten;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,6 +42,11 @@ builder.Services.AddMediatR(config =>
 //    config.WithModules(modules);
 //});
 builder.Services.AddCarterWithExtension(assembly);
+builder.Services.AddMarten(opts =>
+{
+    opts.Connection(builder.Configuration.GetConnectionString("Database")!);    
+}).UseLightweightSessions();
+
 
 var app = builder.Build();
 

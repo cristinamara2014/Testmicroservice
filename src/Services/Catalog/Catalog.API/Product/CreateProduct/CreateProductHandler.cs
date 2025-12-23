@@ -1,5 +1,7 @@
 ﻿using MediatR;
 using Catalog.API.Models;
+using Marten;
+
 
 namespace Catalog.API.Product.CreateProduct
 {
@@ -14,7 +16,7 @@ namespace Catalog.API.Product.CreateProduct
 
     
 public record CreateProductResult(Guid Id);
-    public class CreateProductHandler : IRequestHandler<CreateProductCommand, CreateProductResult>
+    public class CreateProductHandler(IDocumentSession session): IRequestHandler<CreateProductCommand, CreateProductResult>
     {
         public async Task<CreateProductResult> Handle(CreateProductCommand command, CancellationToken cancellationToken)
         {
@@ -28,8 +30,8 @@ public record CreateProductResult(Guid Id);
             };
 
             //save to database
-            //session.Store(product);
-            //await session.SaveChangesAsync(cancellationToken);
+            session.Store(product);
+            await session.SaveChangesAsync(cancellationToken);
 
             //return result
             return new CreateProductResult(product.Id);
